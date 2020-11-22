@@ -69,13 +69,26 @@ $overwrite = !empty($params['overwrite']) && $params['overwrite'];
 $skipConfirm = !empty($params['allways-use-exists-var']) && $params['allways-use-exists-var'];
 $variables = loadValue($root, $files);
 $confirmed = [];
+$finish = false;
 foreach ($files as $file) {
 	if (!copyFile($root, "environments/$env/$file", $file, $overwrite, $variables, $confirmed, $skipConfirm)) {
 		break;
 	}
+	$finish = true;
 }
-
-echo "\n  ... initialization completed.\n\n";
+$list = __DIR__ . "/.local.list";
+$oldFiles = @unserialize(file_get_contents($list));
+if (is_array($oldFiles)) {
+	foreach (array_diff($oldFiles, $files) as $file) {
+		unlink(__DIR__ . "/$file");
+	}
+}
+file_put_contents($list, serialize($files));
+if ($finish) {
+	echo "\n  ... initialization completed.\n\n";
+} else {
+	echo "\n  ... initialization aborted.\n\n";
+}
 
 function getFileList($root, $basePath = '')
 {
