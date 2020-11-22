@@ -9,10 +9,10 @@ return [
 		'request' => [
 			'cookieValidationKey' => 'FRONTEND_COOKIE_KEY32',
 		],
-		'modules' => [
-			'debug' => [
-				'class' => 'yii\debug\Module',
-			],
+	],
+	'modules' => [
+		'debug' => [
+			'class' => 'yii\debug\Module',
 		],
 	],
 ];

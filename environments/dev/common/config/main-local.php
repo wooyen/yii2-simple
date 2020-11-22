@@ -18,10 +18,10 @@ return [
 			// for the mailer to send real emails.
 			'useFileTransport' => true,
 		],
-		'modules' => [
-			'gii' => [
-				'class' => 'yii\gii\Module',
-			],
+	],
+	'modules' => [
+		'gii' => [
+			'class' => 'yii\gii\Module',
 		],
 	],
 ];
