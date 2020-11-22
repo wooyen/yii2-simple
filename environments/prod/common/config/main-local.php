@@ -6,7 +6,7 @@ return [
 	'components' => [
 		'db' => [
 			'dsn' => 'mysql:host=localhost;dbname=yii2simple',
-			'username' => 'root',
+			'username' => 'yii2',
 			'password' => 'DB_PASSWORD',
 		],
 		'mailer' => [
