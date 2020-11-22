@@ -4,12 +4,10 @@
 # END
 
 return [
+	'bootstrap' => ['debug'],
 	'components' => [
 		'request' => [
 			'cookieValidationKey' => 'FRONTEND_COOKIE_KEY32',
-		],
-		'bootstrap' => [
-			'debug'
 		],
 		'modules' => [
 			'debug' => [

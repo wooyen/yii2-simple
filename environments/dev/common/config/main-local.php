@@ -3,6 +3,7 @@
 # SENSITIVE:DB_PASSWORD
 # END
 return [
+	'bootstrap' => ['gii'],
 	'components' => [
 		'db' => [
 			'dsn' => 'mysql:host=localhost;dbname=yii2simple_dev',
@@ -16,9 +17,6 @@ return [
 			// 'useFileTransport' to false and configure a transport
 			// for the mailer to send real emails.
 			'useFileTransport' => true,
-		],
-		'bootstrap' => [
-			'gii',
 		],
 		'modules' => [
 			'gii' => [
