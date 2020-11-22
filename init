@@ -23,24 +23,40 @@ if ($dir === false) {
 }
 while (($entry = readdir($dir)) !== false) {
 	if ($entry[0] !== '.' && is_dir("$root/environments/$entry")) {
-		$envs[] = $entry;
+		$name = preg_replace('/^\d+\-/', '', $entry);
+		if (array_key_exists($name, $envs)) {
+			echo "There are more than one environments in the same name of $name. Please check and fix it.\n";
+			exit(2);
+		}
+		$envs[$name] = $entry;
 	}
 }
-if (empty($params['env']) || !array_key_exists($params['env'], $envs)) {
+$envName = '';
+if (!empty($params['env'])) {
+	if (array_key_exists($params['env'], $envs)) {
+		$envName = $params['env'];
+	} else {
+		echo "Environment {$params['env']} does not exits.\n\n";
+	}
+}
+if (empty($envName)) {
 	echo "Which environment do you want the application to be initialized in?\n\n";
-	foreach ($envs as $i => $name) {
+	asort($envs);
+	$names = array_keys($envs);
+	foreach ($names as $i => $name) {
 		echo "  [$i] $name\n";
 	}
-	echo "\n  Your choice: [0-" . (count($envs) - 1) . ', or "q" to quit] ';
+	$maxIndex = count($envs) - 1;
+	echo "\n  Your choice: [0-$maxIndex, or 'q' to quit] ";
 	$answer = trim(fgets(STDIN));
-	if (!array_key_exists($answer, $envs)) {
+	if (!ctype_digit($answer) || $answer > $maxIndex) {
 		echo "\n  Quit initialization.\n";
 		exit(2);
 	}
-	$params['env'] = $envs[$answer];
+	$envName = $names[$answer];
 }
-$env = $params['env'];
-echo "\n  Initialize the application under '{$params['env']}' environment? [yes|no] ";
+$env = $envs[$envName];
+echo "\n  Initialize the application under '$envName' environment? [yes|no] ";
 $answer = trim(fgets(STDIN));
 if (strncasecmp($answer, 'y', 1)) {
 	echo "\n  Quit initialization.\n";
