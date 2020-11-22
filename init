@@ -167,7 +167,7 @@ function copyFile($root, $source, $target, &$overwrite, $variables, &$confirmed,
 			$loop = true;
 			do {
 				echo "    exist $target\n";
-				echo "                  ...overwrite? [Yes|No|All|Quit|Old file|Curent file] ";
+				echo "                  ...overwrite? [Yes|No|All|Quit|Old file|Curent file|Diff] ";
 				$answer = strtolower(substr(trim(fgets(STDIN)), 0, 1));
 				switch ($answer) {
 				case 'q':
@@ -186,6 +186,24 @@ function copyFile($root, $source, $target, &$overwrite, $variables, &$confirmed,
 					break;
 				case 'c':
 					echo $content;
+					break;
+				case 'd':
+					$sed_proc = proc_open('sed ' . escapeshellarg('s/^@/\x1b[33m@/;s/^-/\x1b[1;31m-/;s/^+/\x1b[1;32m+/;s/$/\x1b[0m/'), [['pipe', 'r'], STDOUT, STDERR], $sed_pipes);
+					if ($sed_proc === false) {
+						$proc = proc_open('diff -u ' . escapeshellarg($dst) . ' -', [['pipe', 'r'], STDOUT, STDERR], $pipes);
+					} else {
+						$proc = proc_open('diff -u ' . escapeshellarg($dst) . ' -', [['pipe', 'r'], $sed_pipes[0], STDERR], $pipes);
+					}
+					if ($proc === false) {
+						echo "Can not execute diff.\n";
+						break;
+					}
+					fwrite($pipes[0], $content);
+					fclose($pipes[0]);
+					proc_close($proc);
+					if ($sed_proc !== false) {
+						proc_close($sed_proc);
+					}
 					break;
 				}
 			} while ($loop);
